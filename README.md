@@ -27,7 +27,3 @@ Build
 ```
 npm run build
 ```
-Webpack Dev Server
-```
-npm run start
-```
