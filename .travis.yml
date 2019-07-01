@@ -8,4 +8,4 @@ install:
   - npm uninstall tslint --no-save
   - npm install
 script:
-    - npm run test
+    - npm run build

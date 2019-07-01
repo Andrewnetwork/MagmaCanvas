@@ -14,7 +14,35 @@ function graph(){
     const canvasDim  = 800;
     const mCanvas    = new ManagedCanvas("canvasContainer",canvasDim,canvasDim,true);
     const grid       = new Grid(canvasDim,canvasDim);
-    grid.attach(mCanvas);    
+    grid.attach(mCanvas);   
+    function ballDrop(startPos:Point){
+        let circ = new Circle({x:startPos.x,y:startPos.y},10);
+        mCanvas.add(circ);
+        let a = 9.8;
+        let t = 0;
+        let iHandler = setInterval(()=>{
+            if(circ.pos.y + 10 <= 800){
+                circ.pos.y += (a*t**2)/2;
+                t+=0.01;
+            }else{
+                circ.pos.y = 790;
+                clearInterval(iHandler);
+            }
+          
+        },0);
+    }
+    let ignoreCounter = 0;
+
+    mCanvas.addEventListener("mousemove",(_,pos)=>{
+        if(ignoreCounter == 0){
+            ballDrop(pos);
+        }else if(ignoreCounter >= 1){
+            ignoreCounter = -1;
+        }
+
+        ignoreCounter+=1;
+    });
+ 
 }
 function circleSim(){
     const canvasDim  = 800;
@@ -35,11 +63,6 @@ function circleSim(){
           
         },0);
     }
-
-    // mCanvas.addEventListener("click",(_,pos)=>{
-    //     ballDrop(pos);
-    // });
-
     let ignoreCounter = 0;
 
     mCanvas.addEventListener("mousemove",(_,pos)=>{
