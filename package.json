@@ -1,15 +1,19 @@
 {
-  "name": "foldeddrawing",
-  "version": "1.0.0",
-  "description": "",
+  "name": "MagmaCanvas",
+  "version": "0.0.1",
+  "description": "A TypeScript library for working with the HTLM5 canvas.",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "build": "webpack",
     "start": "webpack-dev-server --mode development"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Andrewnetwork/MagmaCanvas.git"
+  },
+  "author": "Andrew Ribeiro",
+  "license": "GNU General Public License v3.0",
   "devDependencies": {
     "@types/jest": "^24.0.15",
     "jest": "^24.8.0",

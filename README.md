@@ -1,9 +1,27 @@
-![Magma](magmaHead.png "Magma")
-![Build Status](https://travis-ci.org/Andrewnetwork/MagmaCanvas.svg?branch=master "TravisCI")
-
-
-A TypeScript library for working with the HTLM5 canvas. 
+<div style="text-align:center">
+    <img alt="react-router" src="magma.png" width="144"> 
+    <br/>
+    <a href="https://travis-ci.org/Andrewnetwork/MagmaCanvas">
+        <img src="https://travis-ci.org/Andrewnetwork/MagmaCanvas.svg?branch=master"/>
+    </a>
+    <br/>
+    A TypeScript library for working with the HTML5 canvas. 
+</div>
 
 **Currently in early development. Not acceptable for use.**
 
 [Example](https://andrewnetwork.github.io/MagmaCanvas/dist/)
+
+## Scripts
+Testing
+```
+npm run test
+```
+Build
+```
+npm run build
+```
+Webpack Dev Server
+```
+npm run start
+```

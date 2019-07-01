@@ -5,10 +5,10 @@ import { Grid }                             from "./MagmaCanvas/Objects";
 
 function start(){
     //animationExample(ex1);
-    //cutExample();
+    cutExample();
     //follow();
     //circleSim();
-    graph();
+    //graph();
 }
 function graph(){
     const canvasDim  = 800;
