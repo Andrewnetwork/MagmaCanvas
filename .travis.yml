@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  - 'node'
+  - '10'
+  - '8'
+install:
+  - npm uninstall typescript --no-save
+  - npm uninstall tslint --no-save
+  - npm install
+script:
+    - npm run test

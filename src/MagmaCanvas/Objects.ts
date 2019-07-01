@@ -13,7 +13,7 @@ export class Grid{
     constructor(width:number,height:number){
         this.width = width;
         this.height = height;
-        this._gridSpaceIndex = 7;
+        this._gridSpaceIndex = 6;
         this.gridSpaces = divisors(this.width).slice(4, -4);
         this._gridSpace = this.gridSpaces[this._gridSpaceIndex];
     }
@@ -34,6 +34,7 @@ export class Grid{
                 if(this.gridSpace != this.gridSpaces[this.gridSpaces.length-1]){
                     this._gridSpaceIndex += 1;            
                     this.gridSpace = this.gridSpaces[this._gridSpaceIndex];
+                    console.log(this.gridSpace);
                 }
             }else{
                 if(this.gridSpace != this.gridSpaces[0]){
@@ -75,7 +76,7 @@ export class Grid{
 function divisors(n:number):number[]{
     let div : number[] = [];
     for(let i = 1; i <= n/2;i++){
-        if(n%i == 0){
+        if(n%i == 0 && (n/i)%2 == 0){
             div.push(i);
         }
     }
