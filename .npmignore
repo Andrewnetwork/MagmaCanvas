@@ -1,0 +1,5 @@
+/dist
+/test
+/src
+.travis.yml
+jest.config.js

@@ -1,11 +1,11 @@
 /**
- * ManagedCanvas.ts
+ * MagmaCanvas.ts
  * Andrew Ribeiro 
  * June 2019
  */
 import { Drawable,Point,Polygon,Diagram } from './Shapes';
 
-export class ManagedCanvas{
+export class MagmaCanvas{
     objects:Drawable[];
     ctx:CanvasRenderingContext2D;
     canvas:HTMLCanvasElement;

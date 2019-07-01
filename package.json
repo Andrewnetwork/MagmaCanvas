@@ -1,12 +1,11 @@
 {
-  "name": "MagmaCanvas",
-  "version": "0.0.1",
-  "description": "A TypeScript library for working with the HTLM5 canvas.",
-  "main": "index.js",
+  "name": "magma-canvas",
+  "version": "0.0.5",
+  "description": "A TypeScript library for working with the HTML5 canvas.",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest",
-    "build": "webpack",
-    "start": "webpack-dev-server --mode development"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -19,13 +18,11 @@
     "jest": "^24.8.0",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.4",
-    "typescript": "^3.5.2",
-    "webpack": "^4.35.0",
-    "webpack-cli": "^3.3.5",
-    "webpack-dev-server": "^3.7.2"
+    "typescript": "^3.5.2"
   },
   "dependencies": {
     "@types/lodash": "^4.14.135",
     "lodash": "^4.17.11"
-  }
+  },
+  "keywords": ["typescript","html5-canvas"]
 }

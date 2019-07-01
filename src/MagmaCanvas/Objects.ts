@@ -1,12 +1,12 @@
 import { Drawable,Shapes,Line } from "./Shapes";
-import { ManagedCanvas } from "./ManagedCanvas";
+import { MagmaCanvas } from "./MagmaCanvas";
 
 export class Grid{
     private _gridSpaceIndex:number;
     private _gridSpace:number;
     width:number;
     height:number;
-    mCanvas:ManagedCanvas;
+    mCanvas:MagmaCanvas;
     shapeHandlers:number[];
     gridSpaces:number[];
 
@@ -27,7 +27,7 @@ export class Grid{
     get gridSpace(){
         return this._gridSpace;
     }
-    attach(mCanvas:ManagedCanvas){
+    attach(mCanvas:MagmaCanvas){
         this.mCanvas = mCanvas;
         this.mCanvas.canvas.addEventListener("wheel",(ev)=>{
             if(ev.deltaY > 0){
