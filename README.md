@@ -1,4 +1,4 @@
-<div style="text-align:center">
+<p align="center">
     <img alt="react-router" src="magma.png" width="144"> 
     <br/>
     <a href="https://travis-ci.org/Andrewnetwork/MagmaCanvas">
@@ -6,7 +6,7 @@
     </a>
     <br/>
     A TypeScript library for working with the HTML5 canvas. 
-</div>
+</p>
 
 **Currently in early development. Not acceptable for use.**
 
