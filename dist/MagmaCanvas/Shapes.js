@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -12,18 +11,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Axis;
+export var Axis;
 (function (Axis) {
     Axis[Axis["X"] = 0] = "X";
     Axis[Axis["Y"] = 1] = "Y";
-})(Axis = exports.Axis || (exports.Axis = {}));
+})(Axis || (Axis = {}));
 var Drawable = (function () {
     function Drawable() {
     }
     return Drawable;
 }());
-exports.Drawable = Drawable;
+export { Drawable };
 var Shapes = (function () {
     function Shapes() {
     }
@@ -32,7 +30,7 @@ var Shapes = (function () {
     };
     return Shapes;
 }());
-exports.Shapes = Shapes;
+export { Shapes };
 var Diagram = (function (_super) {
     __extends(Diagram, _super);
     function Diagram(src, loc) {
@@ -47,7 +45,7 @@ var Diagram = (function (_super) {
     };
     return Diagram;
 }(Drawable));
-exports.Diagram = Diagram;
+export { Diagram };
 var Polygon = (function (_super) {
     __extends(Polygon, _super);
     function Polygon(points, fillColor) {
@@ -149,7 +147,7 @@ var Polygon = (function (_super) {
     };
     return Polygon;
 }(Drawable));
-exports.Polygon = Polygon;
+export { Polygon };
 var Circle = (function (_super) {
     __extends(Circle, _super);
     function Circle(pos, radius, fillColor) {
@@ -168,7 +166,7 @@ var Circle = (function (_super) {
     };
     return Circle;
 }(Drawable));
-exports.Circle = Circle;
+export { Circle };
 var Line = (function (_super) {
     __extends(Line, _super);
     function Line(start, end, lineWidth, extend) {
@@ -207,8 +205,8 @@ var Line = (function (_super) {
     };
     return Line;
 }(Drawable));
-exports.Line = Line;
-function includes(points, target) {
+export { Line };
+export function includes(points, target) {
     for (var i = 0; i < points.length; i++) {
         if (points[i].x == target.x && points[i].y == target.y) {
             return true;
@@ -216,4 +214,3 @@ function includes(points, target) {
     }
     return false;
 }
-exports.includes = includes;

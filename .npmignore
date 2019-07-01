@@ -3,3 +3,4 @@
 /src
 .travis.yml
 jest.config.js
+.babelrc

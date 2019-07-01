@@ -3,6 +3,8 @@
  * Andrew Ribeiro 
  * July 2019
  */
+import lo from "lodash";
+
 interface AnimationFrame{
     transCondition:Function;
     action:Function;
@@ -55,8 +57,11 @@ export class Animator{
         this.isLooping = true;
     }
     endLoop(){
-        let rp = Array(this.nRepeat).fill(this.loopFrames).reduce((p,c)=>p.concat(c));
+        
+        let rp = lo.reduce(lo.fill(Array<AnimationFrame>(this.nRepeat),this.loopFrames),
+            (p:AnimationFrame[],c:AnimationFrame[])=>p.concat(c));
         this.frames = [...this.frames,...rp];
         this.isLooping = false;
+        
     }
 }

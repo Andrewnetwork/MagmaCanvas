@@ -1,5 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+import lo from "lodash";
 var Animator = (function () {
     function Animator() {
         this.frames = [];
@@ -40,10 +39,10 @@ var Animator = (function () {
         this.isLooping = true;
     };
     Animator.prototype.endLoop = function () {
-        var rp = Array(this.nRepeat).fill(this.loopFrames).reduce(function (p, c) { return p.concat(c); });
+        var rp = lo.reduce(lo.fill(Array(this.nRepeat), this.loopFrames), function (p, c) { return p.concat(c); });
         this.frames = this.frames.concat(rp);
         this.isLooping = false;
     };
     return Animator;
 }());
-exports.Animator = Animator;
+export { Animator };

@@ -1,6 +1,6 @@
 {
   "name": "magma-canvas",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A TypeScript library for working with the HTML5 canvas.",
   "main": "dist/index.js",
   "scripts": {
@@ -14,6 +14,10 @@
   "author": "Andrew Ribeiro",
   "license": "GNU General Public License v3.0",
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/preset-typescript": "^7.3.3",
+    "@babel/types": "^7.4.4",
     "@types/jest": "^24.0.15",
     "jest": "^24.8.0",
     "ts-jest": "^24.0.2",
@@ -24,5 +28,8 @@
     "@types/lodash": "^4.14.135",
     "lodash": "^4.17.11"
   },
-  "keywords": ["typescript","html5-canvas"]
+  "keywords": [
+    "typescript",
+    "html5-canvas"
+  ]
 }

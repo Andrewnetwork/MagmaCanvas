@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Shapes_1 = require("./Shapes");
+import { Polygon, Diagram } from './Shapes';
 var MagmaCanvas = (function () {
     function MagmaCanvas(containerID, width, height, history, cursor) {
         var _this = this;
@@ -14,7 +12,7 @@ var MagmaCanvas = (function () {
         this.ctx = this.canvas.getContext('2d');
         this.objects = [];
         if (cursor) {
-            this.cursorImage = new Shapes_1.Diagram("cursor.png", { x: 0, y: 0 });
+            this.cursorImage = new Diagram("cursor.png", { x: 0, y: 0 });
             this.addEventListener("mousemove", function (_, pos) {
                 _this.cursorImage.loc = { x: pos.x - 5, y: pos.y - 4 };
             });
@@ -67,7 +65,7 @@ var MagmaCanvas = (function () {
         this.objects = [];
     };
     MagmaCanvas.prototype.move = function (objHandler, deltas) {
-        if (this.objects[objHandler] instanceof Shapes_1.Polygon) {
+        if (this.objects[objHandler] instanceof Polygon) {
             this.objects[objHandler].points.forEach(function (point) {
                 point.x += deltas.x;
                 point.y += deltas.y;
@@ -86,7 +84,7 @@ var MagmaCanvas = (function () {
     };
     return MagmaCanvas;
 }());
-exports.MagmaCanvas = MagmaCanvas;
+export { MagmaCanvas };
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
     return {
