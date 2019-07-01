@@ -16,8 +16,6 @@
 
 **Currently in early development. Not acceptable for use.**
 
-[Example](https://andrewnetwork.github.io/MagmaCanvas/dist/)
-
 ## Scripts
 Testing
 ```
