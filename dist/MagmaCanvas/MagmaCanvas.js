@@ -14,7 +14,15 @@ var MagmaCanvas = (function () {
         if (cursor) {
             this.cursorImage = new Diagram("cursor.png", { x: 0, y: 0 });
             this.addEventListener("mousemove", function (_, pos) {
-                _this.cursorImage.loc = { x: pos.x - 5, y: pos.y - 4 };
+                if (_this.cursorImage != null) {
+                    _this.cursorImage.loc = { x: pos.x - 5, y: pos.y - 4 };
+                }
+            });
+            this.canvas.addEventListener("mouseleave", function () {
+                _this.cursorImage = null;
+            });
+            this.canvas.addEventListener("mouseenter", function () {
+                _this.cursorImage = new Diagram("cursor.png", { x: 0, y: 0 });
             });
         }
         else {

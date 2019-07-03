@@ -28,11 +28,19 @@ export class MagmaCanvas{
 
         if(cursor){
             this.cursorImage = new Diagram("cursor.png",{x:0,y:0});
-            
             // Attach a cursor for the canvas. 
             this.addEventListener("mousemove",(_,pos)=>{
-                this.cursorImage.loc = {x:pos.x-5,y:pos.y-4};
+                if(this.cursorImage != null){
+                    this.cursorImage.loc = {x:pos.x-5,y:pos.y-4};
+                }
             });
+            this.canvas.addEventListener("mouseleave",()=>{
+                this.cursorImage = null;
+            });
+            this.canvas.addEventListener("mouseenter",()=>{
+                this.cursorImage = new Diagram("cursor.png",{x:0,y:0});
+            });
+            
         }else{
             this.cursorImage = null;
         }
