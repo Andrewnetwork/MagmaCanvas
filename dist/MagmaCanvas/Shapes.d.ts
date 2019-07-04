@@ -54,3 +54,4 @@ export declare class Line extends Drawable {
     findY(xVal: number): number;
 }
 export declare function includes(points: Point[], target: Point): boolean;
+export declare function euclideanWalk(pts: Point[]): Point[];

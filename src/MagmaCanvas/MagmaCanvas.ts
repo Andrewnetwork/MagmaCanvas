@@ -47,7 +47,6 @@ export class MagmaCanvas{
         // Setup render tick.
         setInterval(()=>this.render(),0);
     }
-
     add(obj:Drawable):number{
         this.objects.push(obj);
         let objectID = this.objects.length-1;

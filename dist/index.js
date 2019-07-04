@@ -1,4 +1,9 @@
-export * from "./MagmaCanvas/MagmaCanvas";
-export * from "./MagmaCanvas/Animator";
-export * from "./MagmaCanvas/Objects";
-export * from "./MagmaCanvas/Shapes";
+"use strict";
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(require("./MagmaCanvas/MagmaCanvas"));
+__export(require("./MagmaCanvas/Animator"));
+__export(require("./MagmaCanvas/Objects"));
+__export(require("./MagmaCanvas/Shapes"));

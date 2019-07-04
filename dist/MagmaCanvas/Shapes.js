@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -11,17 +12,19 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-export var Axis;
+Object.defineProperty(exports, "__esModule", { value: true });
+var List_1 = require("./Helpers/List");
+var Axis;
 (function (Axis) {
     Axis[Axis["X"] = 0] = "X";
     Axis[Axis["Y"] = 1] = "Y";
-})(Axis || (Axis = {}));
+})(Axis = exports.Axis || (exports.Axis = {}));
 var Drawable = (function () {
     function Drawable() {
     }
     return Drawable;
 }());
-export { Drawable };
+exports.Drawable = Drawable;
 var Shapes = (function () {
     function Shapes() {
     }
@@ -30,7 +33,7 @@ var Shapes = (function () {
     };
     return Shapes;
 }());
-export { Shapes };
+exports.Shapes = Shapes;
 var Diagram = (function (_super) {
     __extends(Diagram, _super);
     function Diagram(src, loc) {
@@ -45,7 +48,7 @@ var Diagram = (function (_super) {
     };
     return Diagram;
 }(Drawable));
-export { Diagram };
+exports.Diagram = Diagram;
 var Polygon = (function (_super) {
     __extends(Polygon, _super);
     function Polygon(points, fillColor) {
@@ -80,17 +83,20 @@ var Polygon = (function (_super) {
                 }
             }
         });
-        var containedPoints = [];
+        var cutLine = new Line(boundaryPoints[0], boundaryPoints[1]);
+        var abovePoints = [];
+        var belowPoints = [];
         this.points.forEach(function (point) {
-            var cond1 = boundaryPoints[0].x >= point.x || boundaryPoints[0].y >= point.y;
-            var cond2 = boundaryPoints[1].x >= point.x || boundaryPoints[1].y >= point.y;
-            if (cond1 || cond2) {
-                containedPoints.push(point);
+            if (point.y > cutLine.findY(point.x)) {
+                abovePoints.push(point);
+            }
+            else {
+                belowPoints.push(point);
             }
         });
-        var as = boundaryPoints.concat(containedPoints.reverse());
-        console.log(as);
-        return [new Polygon(as)];
+        var topOut = euclideanWalk(boundaryPoints.concat(abovePoints));
+        var bottomOut = euclideanWalk(boundaryPoints.concat(belowPoints));
+        return [new Polygon(topOut), new Polygon(bottomOut)];
     };
     Polygon.validPolygon = function (points) {
     };
@@ -147,7 +153,7 @@ var Polygon = (function (_super) {
     };
     return Polygon;
 }(Drawable));
-export { Polygon };
+exports.Polygon = Polygon;
 var Circle = (function (_super) {
     __extends(Circle, _super);
     function Circle(pos, radius, fillColor) {
@@ -166,7 +172,7 @@ var Circle = (function (_super) {
     };
     return Circle;
 }(Drawable));
-export { Circle };
+exports.Circle = Circle;
 var Line = (function (_super) {
     __extends(Line, _super);
     function Line(start, end, lineWidth, extend) {
@@ -205,8 +211,8 @@ var Line = (function (_super) {
     };
     return Line;
 }(Drawable));
-export { Line };
-export function includes(points, target) {
+exports.Line = Line;
+function includes(points, target) {
     for (var i = 0; i < points.length; i++) {
         if (points[i].x == target.x && points[i].y == target.y) {
             return true;
@@ -214,3 +220,34 @@ export function includes(points, target) {
     }
     return false;
 }
+exports.includes = includes;
+function euclideanDist(p1, p2) {
+    return Math.sqrt(Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2));
+}
+function euclideanWalk(pts) {
+    var points = new List_1.List(pts);
+    var walk = [points.i[0]];
+    var currPoint = points.i[0];
+    points.delete(0);
+    while (currPoint != null) {
+        var minDist = Infinity;
+        var minPointIdx = null;
+        for (var i = 0; i < points.length; i++) {
+            var dist = euclideanDist(currPoint, points.i[i]);
+            if (dist < minDist) {
+                minDist = dist;
+                minPointIdx = i;
+            }
+        }
+        if (minPointIdx != null) {
+            currPoint = points.i[minPointIdx];
+            points.delete(minPointIdx);
+            walk.push(currPoint);
+        }
+        else {
+            currPoint = null;
+        }
+    }
+    return walk;
+}
+exports.euclideanWalk = euclideanWalk;

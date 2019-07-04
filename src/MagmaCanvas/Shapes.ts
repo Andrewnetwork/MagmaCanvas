@@ -3,6 +3,8 @@
  * Andrew Ribeiro 
  * June 2019
  */
+import {List} from "./Helpers/List";
+
 export interface Point{
     x : number
     y : number
@@ -64,22 +66,20 @@ export class Polygon extends Drawable{
                 }
             }
         });
-        // Create polygons created by boundary points.
-        // let left   = this.pointsWith(Axis.X,200);
-        // let right  = this.pointsWith(Axis.X,600);
-        // let top    = this.pointsWith(Axis.Y,200);
-        // let bottom = this.pointsWith(Axis.Y,600);
-        let containedPoints : Point[] = [];
+        // Find all points above and below the cut line.
+        let cutLine = new Line(boundaryPoints[0],boundaryPoints[1]); 
+        let abovePoints:Point[] = [];
+        let belowPoints:Point[] = [];
         this.points.forEach((point)=>{
-            let cond1 = boundaryPoints[0].x >= point.x || boundaryPoints[0].y >= point.y;
-            let cond2 = boundaryPoints[1].x >= point.x || boundaryPoints[1].y >= point.y;
-            if(cond1 || cond2){
-                containedPoints.push(point);
+            if(point.y > cutLine.findY(point.x)){
+                abovePoints.push(point);
+            }else{
+                belowPoints.push(point);
             }
         });
-        let as = [...boundaryPoints,...containedPoints.reverse()];
-        console.log(as);
-        return [new Polygon(as)];
+        let topOut = euclideanWalk([...boundaryPoints,...abovePoints]); 
+        let bottomOut = euclideanWalk([...boundaryPoints,...belowPoints]);
+        return [new Polygon(topOut),new Polygon(bottomOut)];
     }
     /**
      * Checks if a set of points is a valid polygon. A valid 
@@ -217,4 +217,37 @@ export function includes(points:Point[],target:Point){
         }
     }
     return false;
+}
+function euclideanDist(p1:Point,p2:Point){
+    return Math.sqrt((p1.x-p2.x)**2+(p1.y-p2.y)**2);
+}
+/**
+ * Given a set of points, walk from the first point to the nearest point
+ * and so on. 
+ * @param points 
+ */
+export function euclideanWalk(pts:Point[]){
+    let points = new List<Point>(pts);
+    let walk : Point[] = [points.i[0]];
+    let currPoint = points.i[0];
+    points.delete(0);
+    while(currPoint != null){
+        let minDist = Infinity;
+        let minPointIdx : number = null;
+        for(let i=0; i<points.length ;i++){
+            let dist = euclideanDist(currPoint,points.i[i]);
+            if(dist < minDist){
+                minDist = dist;
+                minPointIdx = i;
+            }
+        }
+        if(minPointIdx != null){
+            currPoint = points.i[minPointIdx];
+            points.delete(minPointIdx);
+            walk.push(currPoint);
+        }else{
+            currPoint = null;
+        }
+    }
+    return walk;
 }
