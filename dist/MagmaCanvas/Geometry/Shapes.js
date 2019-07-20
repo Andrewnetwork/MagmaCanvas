@@ -13,26 +13,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var List_1 = require("./Helpers/List");
-var Axis;
-(function (Axis) {
-    Axis[Axis["X"] = 0] = "X";
-    Axis[Axis["Y"] = 1] = "Y";
-})(Axis = exports.Axis || (exports.Axis = {}));
-var Drawable = (function () {
-    function Drawable() {
-    }
-    return Drawable;
-}());
-exports.Drawable = Drawable;
-var CanvasObject = (function (_super) {
-    __extends(CanvasObject, _super);
-    function CanvasObject() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return CanvasObject;
-}(Drawable));
-exports.CanvasObject = CanvasObject;
+var Helpers_1 = require("../Helpers");
+var Global_1 = require("../Global");
 var Shapes = (function () {
     function Shapes() {
     }
@@ -55,7 +37,7 @@ var Diagram = (function (_super) {
         ctx.drawImage(this.img, this.loc.x, this.loc.y);
     };
     return Diagram;
-}(Drawable));
+}(Global_1.Drawable));
 exports.Diagram = Diagram;
 var Polygon = (function (_super) {
     __extends(Polygon, _super);
@@ -117,12 +99,12 @@ var Polygon = (function (_super) {
     Polygon.prototype.pointsWith = function (axis, val) {
         var ls = [];
         this.points.forEach(function (point) {
-            if (val == (axis == Axis.X ? point.x : point.y)) {
+            if (val == (axis == Global_1.Axis.X ? point.x : point.y)) {
                 ls.push(point);
             }
         });
         ls.sort(function (a, b) {
-            if (axis == Axis.X) {
+            if (axis == Global_1.Axis.X) {
                 return b.y - a.y;
             }
             else {
@@ -166,14 +148,14 @@ var Polygon = (function (_super) {
         return [a, b];
     };
     Polygon.prototype.has = function (targ) {
-        var xBounds = this.min(Axis.X) <= targ.x && targ.x <= this.max(Axis.X);
-        var yBounds = this.min(Axis.Y) <= targ.y && targ.y <= this.max(Axis.Y);
+        var xBounds = this.min(Global_1.Axis.X) <= targ.x && targ.x <= this.max(Global_1.Axis.X);
+        var yBounds = this.min(Global_1.Axis.Y) <= targ.y && targ.y <= this.max(Global_1.Axis.Y);
         return xBounds && yBounds;
     };
     Polygon.prototype.pointFunc = function (startVal, axis, fun) {
         var val = startVal;
         this.points.map(function (point) {
-            var curVal = axis == Axis.X ? point.x : point.y;
+            var curVal = axis == Global_1.Axis.X ? point.x : point.y;
             if (fun(val, curVal)) {
                 val = curVal;
             }
@@ -197,29 +179,33 @@ var Polygon = (function (_super) {
         return { x: xSum / n, y: ySum / n };
     };
     return Polygon;
-}(Drawable));
+}(Global_1.Drawable));
 exports.Polygon = Polygon;
 var Circle = (function (_super) {
     __extends(Circle, _super);
-    function Circle(pos, radius, fillColor) {
+    function Circle(center, radius, fillColor) {
         if (fillColor === void 0) { fillColor = "blue"; }
         var _this = _super.call(this) || this;
         _this.fillColor = fillColor;
-        _this.pos = pos;
+        _this.center = center;
         _this.radius = radius;
         return _this;
     }
     Circle.prototype.draw = function (ctx) {
         ctx.fillStyle = this.fillColor;
         ctx.beginPath();
-        ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI * 2, true);
+        ctx.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2, true);
         ctx.fill();
     };
+    Circle.prototype.attach = function (mCanvas) {
+        var refs = [];
+        return { refs: refs };
+    };
     Circle.prototype.contains = function (point) {
-        return Math.sqrt(Math.pow((point.y - this.pos.y), 2) + Math.pow((point.x - this.pos.x), 2)) <= this.radius;
+        return Math.sqrt(Math.pow((point.y - this.center.y), 2) + Math.pow((point.x - this.center.x), 2)) <= this.radius;
     };
     return Circle;
-}(CanvasObject));
+}(Global_1.CanvasObject));
 exports.Circle = Circle;
 var Line = (function (_super) {
     __extends(Line, _super);
@@ -301,7 +287,7 @@ var Line = (function (_super) {
         return { x: xIntersection, y: yIntersection };
     };
     return Line;
-}(Drawable));
+}(Global_1.Drawable));
 exports.Line = Line;
 function includes(points, target) {
     for (var i = 0; i < points.length; i++) {
@@ -316,7 +302,7 @@ function euclideanDist(p1, p2) {
     return Math.sqrt(Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2));
 }
 function euclideanWalk(pts) {
-    var points = new List_1.List(pts);
+    var points = new Helpers_1.List(pts);
     var walk = [points.i[0]];
     var currPoint = points.i[0];
     points.delete(0);

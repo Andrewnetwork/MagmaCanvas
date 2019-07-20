@@ -13,7 +13,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Shapes_1 = require("./Shapes");
+var Shapes_1 = require("../Primitives/Shapes");
+var Global_1 = require("../Global");
 var Grid = (function (_super) {
     __extends(Grid, _super);
     function Grid(width, height) {
@@ -114,7 +115,7 @@ var Grid = (function (_super) {
         });
     };
     return Grid;
-}(Shapes_1.Drawable));
+}(Global_1.Drawable));
 exports.Grid = Grid;
 function divisors(n) {
     var div = [];

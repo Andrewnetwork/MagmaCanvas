@@ -13,26 +13,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var List_1 = require("./Helpers/List");
-var Axis;
-(function (Axis) {
-    Axis[Axis["X"] = 0] = "X";
-    Axis[Axis["Y"] = 1] = "Y";
-})(Axis = exports.Axis || (exports.Axis = {}));
-var Drawable = (function () {
-    function Drawable() {
-    }
-    return Drawable;
-}());
-exports.Drawable = Drawable;
-var CanvasObject = (function (_super) {
-    __extends(CanvasObject, _super);
-    function CanvasObject() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return CanvasObject;
-}(Drawable));
-exports.CanvasObject = CanvasObject;
+var Helpers_1 = require("../Helpers");
+var Global_1 = require("../Global");
 var Shapes = (function () {
     function Shapes() {
     }
@@ -55,8 +37,23 @@ var Diagram = (function (_super) {
         ctx.drawImage(this.img, this.loc.x, this.loc.y);
     };
     return Diagram;
-}(Drawable));
+}(Global_1.Drawable));
 exports.Diagram = Diagram;
+var Rectangle = (function (_super) {
+    __extends(Rectangle, _super);
+    function Rectangle(upperLeft, width, height) {
+        var _this = _super.call(this) || this;
+        _this.upperLeft = upperLeft;
+        _this.width = width;
+        _this.height = height;
+        return _this;
+    }
+    Rectangle.prototype.draw = function (ctx) {
+        throw new Error("Method not implemented.");
+    };
+    return Rectangle;
+}(Global_1.Drawable));
+exports.Rectangle = Rectangle;
 var Polygon = (function (_super) {
     __extends(Polygon, _super);
     function Polygon(points, fill, color) {
@@ -117,12 +114,12 @@ var Polygon = (function (_super) {
     Polygon.prototype.pointsWith = function (axis, val) {
         var ls = [];
         this.points.forEach(function (point) {
-            if (val == (axis == Axis.X ? point.x : point.y)) {
+            if (val == (axis == Global_1.Axis.X ? point.x : point.y)) {
                 ls.push(point);
             }
         });
         ls.sort(function (a, b) {
-            if (axis == Axis.X) {
+            if (axis == Global_1.Axis.X) {
                 return b.y - a.y;
             }
             else {
@@ -166,14 +163,14 @@ var Polygon = (function (_super) {
         return [a, b];
     };
     Polygon.prototype.has = function (targ) {
-        var xBounds = this.min(Axis.X) <= targ.x && targ.x <= this.max(Axis.X);
-        var yBounds = this.min(Axis.Y) <= targ.y && targ.y <= this.max(Axis.Y);
+        var xBounds = this.min(Global_1.Axis.X) <= targ.x && targ.x <= this.max(Global_1.Axis.X);
+        var yBounds = this.min(Global_1.Axis.Y) <= targ.y && targ.y <= this.max(Global_1.Axis.Y);
         return xBounds && yBounds;
     };
     Polygon.prototype.pointFunc = function (startVal, axis, fun) {
         var val = startVal;
         this.points.map(function (point) {
-            var curVal = axis == Axis.X ? point.x : point.y;
+            var curVal = axis == Global_1.Axis.X ? point.x : point.y;
             if (fun(val, curVal)) {
                 val = curVal;
             }
@@ -197,29 +194,46 @@ var Polygon = (function (_super) {
         return { x: xSum / n, y: ySum / n };
     };
     return Polygon;
-}(Drawable));
+}(Global_1.Drawable));
 exports.Polygon = Polygon;
 var Circle = (function (_super) {
     __extends(Circle, _super);
-    function Circle(pos, radius, fillColor) {
-        if (fillColor === void 0) { fillColor = "blue"; }
-        var _this = _super.call(this) || this;
-        _this.fillColor = fillColor;
-        _this.pos = pos;
+    function Circle(center, radius, fill, color) {
+        if (fill === void 0) { fill = true; }
+        if (color === void 0) { color = "blue"; }
+        var _this = _super.call(this, center) || this;
+        _this.color = color;
         _this.radius = radius;
+        _this.fill = fill;
+        _this.boundingBox = new Rectangle({ x: _this.center().x - radius, y: _this.center().y - radius }, radius * 2, radius * 2);
         return _this;
     }
     Circle.prototype.draw = function (ctx) {
-        ctx.fillStyle = this.fillColor;
         ctx.beginPath();
-        ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI * 2, true);
-        ctx.fill();
+        ctx.arc(this.center().x, this.center().y, this.radius, 0, Math.PI * 2, true);
+        if (this.fill) {
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+        else {
+            ctx.strokeStyle = this.color;
+            ctx.stroke();
+        }
+    };
+    Circle.prototype.attach = function (mCanvas, invokeRender) {
+        var refs = [];
+        this.invokeRender = invokeRender;
+        return { refs: refs };
     };
     Circle.prototype.contains = function (point) {
-        return Math.sqrt(Math.pow((point.y - this.pos.y), 2) + Math.pow((point.x - this.pos.x), 2)) <= this.radius;
+        var center = this._center;
+        if (this.center instanceof Function) {
+            center = this.center();
+        }
+        return Math.sqrt(Math.pow((point.y - center.y), 2) + Math.pow((point.x - center.x), 2)) <= this.radius;
     };
     return Circle;
-}(CanvasObject));
+}(Global_1.CanvasObject));
 exports.Circle = Circle;
 var Line = (function (_super) {
     __extends(Line, _super);
@@ -301,7 +315,7 @@ var Line = (function (_super) {
         return { x: xIntersection, y: yIntersection };
     };
     return Line;
-}(Drawable));
+}(Global_1.Drawable));
 exports.Line = Line;
 function includes(points, target) {
     for (var i = 0; i < points.length; i++) {
@@ -316,7 +330,7 @@ function euclideanDist(p1, p2) {
     return Math.sqrt(Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2));
 }
 function euclideanWalk(pts) {
-    var points = new List_1.List(pts);
+    var points = new Helpers_1.List(pts);
     var walk = [points.i[0]];
     var currPoint = points.i[0];
     points.delete(0);

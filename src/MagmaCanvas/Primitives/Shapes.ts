@@ -3,16 +3,10 @@
  * Andrew Ribeiro 
  * June 2019
  */
-import {List} from "./Helpers/List";
+import {List} from "../Helpers";
+import {Drawable,Point,CanvasObject,Axis, PointFn} from "../Global";
+import { MagmaCanvas } from "../MagmaCanvas";
 
-export interface Point{
-    x : number
-    y : number
-}
-export enum Axis{ X,Y }
-export abstract class Drawable{
-    abstract draw(ctx:CanvasRenderingContext2D) : void
-}
 export class Shapes{
     static makeRect(x:number,y:number,w:number,h:number){
         return new Polygon([{x:x,y:y},{x:x+w,y:y},{x:x+w,y:y+h},{x:x,y:y+h}]);
@@ -30,19 +24,34 @@ export class Diagram extends Drawable{
     draw(ctx:CanvasRenderingContext2D){
         ctx.drawImage(this.img,this.loc.x,this.loc.y);
     }
-
+}
+export class Rectangle extends Drawable{
+    upperLeft:Point;
+    width:number;
+    height:number;
+    constructor(upperLeft:Point,width:number,height:number){
+        super();
+        this.upperLeft = upperLeft;
+        this.width = width;
+        this.height = height;
+    }
+    draw(ctx: CanvasRenderingContext2D){
+        throw new Error("Method not implemented.");
+    }
 }
 export class Polygon extends Drawable{
     points : Point[];
     ctx: CanvasRenderingContext2D;
-    fillColor:string;
-    constructor(points:Point[],fillColor:string = "red"){
+    color:string;
+    fill:boolean;
+
+    constructor(points:Point[],fill:boolean = true,color:string = "red"){
         super();
         this.points = points;
-        this.fillColor = fillColor;
+        this.color = color;
+        this.fill = fill;
     }
     draw(ctx:CanvasRenderingContext2D){
-        ctx.fillStyle = this.fillColor;
         ctx.beginPath();
         if(this.points[0] != null){
             ctx.moveTo(this.points[0].x, this.points[0].y);
@@ -51,7 +60,13 @@ export class Polygon extends Drawable{
                     ctx.lineTo(this.points[i+1].x, this.points[i+1].y);
                 }
             }
-            ctx.fill();
+            if(this.fill){
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }else{
+                ctx.strokeStyle = this.color;
+                ctx.stroke();
+            }
         }
     }
     splitBy(line:Line):Polygon[]{
@@ -81,15 +96,6 @@ export class Polygon extends Drawable{
         let bottomOut = euclideanWalk([...boundaryPoints,...belowPoints]);
         return [new Polygon(topOut),new Polygon(bottomOut)];
     }
-    /**
-     * Checks if a set of points is a valid polygon. A valid 
-     * polygon is one that has a list of points ordered so that
-     * when it is rendered, lines do not cross. 
-     * @param points A list of points defining a polygon. 
-     */
-    static validPolygon(points:Point[]){
-
-    }
     pointsWith(axis:Axis,val:number){
         let ls : Point[] = []
         this.points.forEach((point)=>{
@@ -107,12 +113,37 @@ export class Polygon extends Drawable{
         });
         return ls;
     }
-    /**
-     * Check if a given line intersects this polygon. 
-     * @param line Line we are checking for intersection. 
-     */
-    lineIntersects(line:Line):Boolean{
-        return true;
+    reflectOver(line:Line){
+        let [a,b] = this.splitBy(line);
+        a.color = "blue";
+        a.points = a.points.map((point)=>{
+            if(line.isOn(point)){
+                return point;
+            }else{
+                if(Math.abs(line.slope()) < 1){
+                    let lineY = line.findY(point.x);
+                    let newY = 0;
+                    if(lineY > point.y){
+                        newY = point.y + (lineY-point.y)*2;
+                    }
+                    else{
+                        newY = point.y - (point.y-lineY)*2;
+                    }
+                    return {x:line.orthLine(point).findX(newY),y:newY};
+                }else{
+                    let lineX = line.findX(point.y);
+                    let newX = 0;
+                    if(lineX > point.x){
+                        newX = point.x + (lineX-point.x)*2;
+                    }
+                    else{
+                        newX = point.x - (point.x-lineX)*2;
+                    }
+                    return {x:newX,y:line.orthLine(point).findY(newX)};
+                }
+            }
+        });
+        return [a,b];
     }
     /**
      * 
@@ -155,21 +186,44 @@ export class Polygon extends Drawable{
         return {x:xSum/n,y:ySum/n};
     }
 }
-export class Circle extends Drawable{
-    fillColor:string;
-    pos:Point;
+
+export class Circle extends CanvasObject{
+    color:string;
     radius:number;
-    constructor(pos:Point,radius:number,fillColor:string = "blue"){
-        super();
-        this.fillColor = fillColor;
-        this.pos = pos;
+    fill:boolean;
+
+    constructor(center:Point|PointFn,radius:number,fill:boolean=true,color:string = "blue"){
+        super(center);
+        this.color  = color;
         this.radius = radius;
+        this.fill   = fill;
+        this.boundingBox = new Rectangle({x:this.center().x-radius,y:this.center().y-radius},radius*2,radius*2);
     }
     draw(ctx:CanvasRenderingContext2D){
-        ctx.fillStyle = this.fillColor;
         ctx.beginPath();
-        ctx.arc(this.pos.x,this.pos.y,this.radius,0,Math.PI * 2, true);
-        ctx.fill();
+        
+        ctx.arc(this.center().x,this.center().y,this.radius,0,Math.PI * 2, true);
+        
+        if(this.fill){
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }else{
+            ctx.strokeStyle = this.color;
+            ctx.stroke();
+        }
+       
+    }
+    attach(mCanvas:MagmaCanvas,invokeRender:Function){
+        let refs : number[] = [];
+        this.invokeRender = invokeRender;
+        return {refs};
+    }
+    contains(point:Point){
+        let center : Point = <Point>this._center;
+        if(this.center instanceof Function){
+            center = this.center();
+        }
+        return  Math.sqrt((point.y - center.y)**2 + (point.x - center.x)**2) <= this.radius;
     }
 }
 export class Line extends Drawable{
@@ -178,20 +232,33 @@ export class Line extends Drawable{
     end: Point;
     extend:Boolean;
     lineWidth:number;
+    strokeStyle:string;
 
-    constructor(start:Point,end:Point,lineWidth:number=1,extend:Boolean=false){
+    constructor(start:Point,end:Point,lineWidth:number=1,extend:Boolean=false,strokeStyle:string="black"){
         super();
         this.start     = start;
         this.end       = end; 
         this.extend    = extend;
         this.lineWidth = lineWidth;
+        this.strokeStyle = strokeStyle;
     }
     draw(ctx:CanvasRenderingContext2D){
         ctx.lineWidth = this.lineWidth;
+        ctx.strokeStyle = this.strokeStyle;
         if(this.extend){
             ctx.beginPath();
-            ctx.moveTo(this.findX(0),0);
-            ctx.lineTo(this.findX(1000),1000);
+            let slope = this.slope();
+            if(slope == 0){
+                ctx.moveTo(0,this.start.y);
+                ctx.lineTo(1000,this.end.y);
+            }else if(slope == Infinity || slope == -Infinity){
+                ctx.moveTo(this.start.x,0);
+                ctx.lineTo(this.end.x,1000);
+            }
+            else{
+                ctx.moveTo(this.findX(0),0);
+                ctx.lineTo(this.findX(1000),1000);
+            }
             ctx.stroke();
         }else{
             ctx.beginPath();
@@ -208,6 +275,35 @@ export class Line extends Drawable{
     }
     findY(xVal:number){
         return this.slope()*(xVal - this.start.x) + this.start.y
+    }
+    /**
+     * A line orthogonal to this line and through the given point. 
+     * @param point Point the orthogonal line passes through. 
+     */
+    orthLine(point:Point,lineWidth:number=1,extend:boolean=false,strokeStyle:string="black"){
+        let orthSlope = -1/this.slope();
+        let newY = 0;
+        let newX = 0;
+        if(orthSlope == 0){
+            newX = 0;
+            newY = point.y;
+        }else if(orthSlope == Infinity || orthSlope == -Infinity){
+            newX = point.x;
+            newY = 0;
+        }
+        else{
+            newY = (-1/this.slope())*point.x + this.findY(0);
+            newX = (newY - point.y + orthSlope*point.x)/orthSlope;
+        }
+        return new Line({x:newX,y:newY},point,lineWidth,extend,strokeStyle);
+    }
+    isOn(point:Point){
+        return this.findY(point.x) == point.y;
+    }
+    pointOfIntersection(line:Line){
+        let xIntersection = (line.findY(0) - this.findY(0))/(this.slope() - line.slope());
+        let yIntersection = line.findY(xIntersection);
+        return {x:xIntersection,y:yIntersection};
     }
 }
 export function includes(points:Point[],target:Point){

@@ -1,5 +1,5 @@
-import { Drawable } from "./Shapes";
-import { MagmaCanvas } from "./MagmaCanvas";
+import { Drawable } from "../Global";
+import { MagmaCanvas } from "../MagmaCanvas";
 export declare class Grid extends Drawable {
     private _gridSpaceIndex;
     private _gridSpace;

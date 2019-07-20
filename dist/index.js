@@ -4,6 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./MagmaCanvas/MagmaCanvas"));
-__export(require("./MagmaCanvas/Animator"));
-__export(require("./MagmaCanvas/Objects"));
-__export(require("./MagmaCanvas/Shapes"));
+__export(require("./MagmaCanvas/Animation/"));
+__export(require("./MagmaCanvas/Objects/"));
+__export(require("./MagmaCanvas/Primitives"));
+__export(require("./MagmaCanvas/Global/"));

@@ -1,17 +1,5 @@
-export interface Point {
-    x: number;
-    y: number;
-}
-export declare enum Axis {
-    X = 0,
-    Y = 1
-}
-export declare abstract class Drawable {
-    abstract draw(ctx: CanvasRenderingContext2D): void;
-}
-export declare abstract class CanvasObject extends Drawable {
-    abstract contains(point: Point): boolean;
-}
+import { Drawable, Point, CanvasObject, Axis, PointFn } from "../Global";
+import { MagmaCanvas } from "../MagmaCanvas";
 export declare class Shapes {
     static makeRect(x: number, y: number, w: number, h: number): Polygon;
 }
@@ -19,6 +7,13 @@ export declare class Diagram extends Drawable {
     img: HTMLImageElement;
     loc: Point;
     constructor(src: string, loc: Point);
+    draw(ctx: CanvasRenderingContext2D): void;
+}
+export declare class Rectangle extends Drawable {
+    upperLeft: Point;
+    width: number;
+    height: number;
+    constructor(upperLeft: Point, width: number, height: number);
     draw(ctx: CanvasRenderingContext2D): void;
 }
 export declare class Polygon extends Drawable {
@@ -38,11 +33,14 @@ export declare class Polygon extends Drawable {
     center(): Point;
 }
 export declare class Circle extends CanvasObject {
-    fillColor: string;
-    pos: Point;
+    color: string;
     radius: number;
-    constructor(pos: Point, radius: number, fillColor?: string);
+    fill: boolean;
+    constructor(center: Point | PointFn, radius: number, fill?: boolean, color?: string);
     draw(ctx: CanvasRenderingContext2D): void;
+    attach(mCanvas: MagmaCanvas, invokeRender: Function): {
+        refs: number[];
+    };
     contains(point: Point): boolean;
 }
 export declare class Line extends Drawable {

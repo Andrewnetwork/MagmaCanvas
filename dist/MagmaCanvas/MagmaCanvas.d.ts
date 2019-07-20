@@ -1,11 +1,14 @@
-import { Drawable, Point, Diagram } from './Shapes';
+import { Diagram } from './Primitives/Shapes';
+import { Drawable, Point, CanvasObject } from './Global';
 export declare class MagmaCanvas {
     objects: Drawable[];
     ctx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     cursorImage: Diagram;
+    renderQueue: number[];
     constructor(containerID: string, width: number, height: number, history?: boolean, cursor?: boolean);
-    add(obj: Drawable): number;
+    add(obj: Drawable | CanvasObject, event?: string, eventListener?: (e: MouseEvent, pos: Point) => void): number;
+    invokeRender(objectID: number): void;
     addList(objs: Drawable[]): number[];
     paintList(objs: Drawable[]): void;
     paint(obj: Drawable): void;
