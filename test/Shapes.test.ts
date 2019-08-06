@@ -1,4 +1,4 @@
-import {Shapes} from "../src/MagmaCanvas/Shapes";
+import {Shapes} from "../src/MagmaCanvas/Primitives/Shapes";
 
 test("Make rectangle.",()=>{
     expect(Shapes.makeRect(0,0,10,10).points).toStrictEqual([
