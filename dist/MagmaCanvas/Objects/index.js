@@ -7,3 +7,4 @@ __export(require("./Grid"));
 __export(require("./Button"));
 __export(require("./TextInput"));
 __export(require("./LinearLayout"));
+__export(require("./Target"));

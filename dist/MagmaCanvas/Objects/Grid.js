@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Shapes_1 = require("../Primitives/Shapes");
+var Primitives_1 = require("../Primitives");
 var Global_1 = require("../Global");
 var Grid = (function (_super) {
     __extends(Grid, _super);
@@ -26,6 +26,7 @@ var Grid = (function (_super) {
         _this._gridSpace = _this.gridSpaces[_this._gridSpaceIndex];
         _this.graphObjects = [];
         _this.graphFns = [];
+        _this.plottedPoints = [];
         return _this;
     }
     Object.defineProperty(Grid.prototype, "gridSpace", {
@@ -42,59 +43,90 @@ var Grid = (function (_super) {
         configurable: true
     });
     Grid.prototype.draw = function (ctx) {
-        this.graphObjects.forEach(function (obj) {
-            obj.draw(ctx);
-        });
-        ctx.drawImage(this.graphCanvas, 0, 0);
+        var _this = this;
+        this.graphObjects.forEach(function (obj) { return obj.draw(ctx); });
+        this.plottedPoints.forEach(function (point) { return (new Primitives_1.Circle(_this.translatePoint(point), _this._gridSpace / 4, true, "black")).draw(ctx); });
+        if (this.graphCanvas != null) {
+            ctx.drawImage(this.graphCanvas, 0, 0);
+        }
     };
-    Grid.prototype.attach = function (mCanvas) {
+    Grid.prototype.zoomIn = function () {
+        var result = false;
+        if (this.gridSpace != this.gridSpaces[this.gridSpaces.length - 1]) {
+            this._gridSpaceIndex += 1;
+            this.gridSpace = this.gridSpaces[this._gridSpaceIndex];
+            result = true;
+        }
+        this.drawGraphs();
+        return result;
+    };
+    Grid.prototype.zoomOut = function () {
+        var result = false;
+        if (this.gridSpace != this.gridSpaces[0]) {
+            this._gridSpaceIndex -= 1;
+            this.gridSpace = this.gridSpaces[this._gridSpaceIndex];
+            result = true;
+        }
+        this.drawGraphs();
+        return result;
+    };
+    Grid.prototype.attach = function (mCanvas, invokeRender) {
         var _this = this;
         this.mCanvas = mCanvas;
         this.mCanvas.canvas.addEventListener("wheel", function (ev) {
             if (ev.deltaY > 0) {
-                if (_this.gridSpace != _this.gridSpaces[_this.gridSpaces.length - 1]) {
-                    _this._gridSpaceIndex += 1;
-                    _this.gridSpace = _this.gridSpaces[_this._gridSpaceIndex];
-                }
+                _this.zoomIn();
             }
             else {
-                if (_this.gridSpace != _this.gridSpaces[0]) {
-                    _this._gridSpaceIndex -= 1;
-                    _this.gridSpace = _this.gridSpaces[_this._gridSpaceIndex];
-                }
+                _this.zoomOut();
             }
-            _this.drawGraphs();
         });
         this.make();
-        this.mCanvas.add(this);
+        return null;
     };
     Grid.prototype.make = function () {
         var container = [];
-        var a = Shapes_1.Shapes.makeRect(400, 0, 400, 400);
+        var a = Primitives_1.Shapes.makeRect(400, 0, 400, 400);
         a.color = "#E1D2DF";
         container.push(a);
-        var b = Shapes_1.Shapes.makeRect(0, 0, 400, 400);
+        var b = Primitives_1.Shapes.makeRect(0, 0, 400, 400);
         b.color = "#F7E7EA";
         container.push(b);
-        var c = Shapes_1.Shapes.makeRect(0, 400, 400, 400);
+        var c = Primitives_1.Shapes.makeRect(0, 400, 400, 400);
         c.color = "#E8F2E2";
         container.push(c);
-        var d = Shapes_1.Shapes.makeRect(400, 400, 400, 400);
+        var d = Primitives_1.Shapes.makeRect(400, 400, 400, 400);
         d.color = "#F7FBEA";
         container.push(d);
         for (var i = this._gridSpace; i < this.width; i += this._gridSpace) {
-            container.push(new Shapes_1.Line({ x: i, y: 0 }, { x: i, y: this.height }));
+            container.push(new Primitives_1.Line({ x: i, y: 0 }, { x: i, y: this.height }, 1, true, "rgba(0,0,0," + (this._gridSpaceIndex + 1) / this.gridSpaces.length + ")"));
         }
         for (var i = this._gridSpace; i < this.height; i += this._gridSpace) {
-            container.push(new Shapes_1.Line({ x: 0, y: i }, { x: this.width, y: i }));
+            container.push(new Primitives_1.Line({ x: 0, y: i }, { x: this.width, y: i }, 1, true, "rgba(0,0,0," + (this._gridSpaceIndex + 1) / this.gridSpaces.length + ")"));
         }
-        container.push(new Shapes_1.Line({ x: 400, y: 0 }, { x: 400, y: 800 }, 3));
-        container.push(new Shapes_1.Line({ x: 0, y: 400 }, { x: 800, y: 400 }, 3));
+        container.push(new Primitives_1.Line({ x: 400, y: 0 }, { x: 400, y: 800 }, 3));
+        container.push(new Primitives_1.Line({ x: 0, y: 400 }, { x: 800, y: 400 }, 3));
         this.graphObjects = container;
     };
     Grid.prototype.graph = function (fn) {
         this.graphFns.push(fn);
         this.drawGraphs();
+    };
+    Grid.prototype.plot = function (point) {
+        this.plottedPoints.push(point);
+    };
+    Grid.prototype.plot_points = function (points) {
+        var _this = this;
+        points.forEach(function (point) { return _this.plot(point); });
+    };
+    Grid.prototype.clearGraphs = function () {
+        this.graphFns = [];
+        this.drawGraphs();
+    };
+    Grid.prototype.translatePoint = function (point) {
+        var dx = this.mCanvas.canvas.width / 2;
+        var dy = this.mCanvas.canvas.height / 2;
+        return { x: point.x * this._gridSpace + dx, y: -point.y * this._gridSpace + dy };
     };
     Grid.prototype.drawGraphs = function () {
         var _this = this;
@@ -110,12 +142,15 @@ var Grid = (function (_super) {
             for (var x = -nSamples; x <= nSamples; x += xInc) {
                 points.push({ x: x * _this._gridSpace + dx, y: (-1 * fn(x)) * _this._gridSpace + dy });
             }
-            var poly = new Shapes_1.Polygon(points, false, "blue");
+            var poly = new Primitives_1.Polygon(points, false, "blue");
             poly.draw(_this.graphCanvas.getContext("2d"));
         });
     };
+    Grid.prototype.contains = function (point) {
+        throw new Error("Method not implemented.");
+    };
     return Grid;
-}(Global_1.Drawable));
+}(Global_1.CanvasObject));
 exports.Grid = Grid;
 function divisors(n) {
     var div = [];

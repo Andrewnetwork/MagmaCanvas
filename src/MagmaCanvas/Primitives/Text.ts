@@ -1,4 +1,4 @@
-import { Drawable,CanvasObject,Point,CanvasReference } from "../Global/Interfaces";
+import { CanvasObject,Point,CanvasReference } from "../Global/";
 import { PointFn } from "../Global/Types";
 import { MagmaCanvas } from "../MagmaCanvas";
 
@@ -17,5 +17,4 @@ export class Text extends CanvasObject{
         ctx.fillStyle = '#000000';
         ctx.fillText("Hello",this.center().x,this.center().y);
     }
-    
 }

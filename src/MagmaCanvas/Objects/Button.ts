@@ -1,5 +1,4 @@
 import { CanvasObject,Point } from "../Global";
-import { Circle } from "../Primitives";
 import { MagmaCanvas } from "../MagmaCanvas";
 
 export class Button extends CanvasObject{

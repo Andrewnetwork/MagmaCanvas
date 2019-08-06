@@ -1,4 +1,4 @@
-import { CanvasObject, CanvasReference } from "../Global/Interfaces";
+import { CanvasObject, CanvasReference } from "../Global/";
 import { MagmaCanvas } from "../MagmaCanvas";
 export declare class Text extends CanvasObject {
     contains(point: import("../Global/Interfaces").Point): boolean;

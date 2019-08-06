@@ -5,3 +5,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./Shapes"));
 __export(require("./Text"));
+__export(require("./Circle"));
+__export(require("./Diagram"));
+__export(require("./Line"));
+__export(require("./Polygon"));

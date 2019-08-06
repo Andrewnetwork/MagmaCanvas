@@ -13,24 +13,22 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Global_1 = require("../Global/");
-var Text = (function (_super) {
-    __extends(Text, _super);
-    function Text() {
-        return _super !== null && _super.apply(this, arguments) || this;
+var Global_1 = require("../Global");
+var Diagram = (function (_super) {
+    __extends(Diagram, _super);
+    function Diagram(src, loc) {
+        var _this = _super.call(this, loc, new Global_1.BoundingBox(loc, 0, 0)) || this;
+        _this.img = new Image();
+        _this.img.src = src;
+        _this.loc = loc;
+        return _this;
     }
-    Text.prototype.contains = function (point) {
+    Diagram.prototype.draw = function (ctx) {
+        ctx.drawImage(this.img, this.loc.x, this.loc.y);
+    };
+    Diagram.prototype.contains = function (point) {
         throw new Error("Method not implemented.");
     };
-    Text.prototype.attach = function (mCanvas) {
-        throw new Error("Method not implemented.");
-        return null;
-    };
-    Text.prototype.draw = function (ctx) {
-        ctx.font = '40px Arial';
-        ctx.fillStyle = '#000000';
-        ctx.fillText("Hello", this.center().x, this.center().y);
-    };
-    return Text;
+    return Diagram;
 }(Global_1.CanvasObject));
-exports.Text = Text;
+exports.Diagram = Diagram;

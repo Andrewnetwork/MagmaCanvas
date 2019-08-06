@@ -1,6 +1,6 @@
-import { Drawable } from "../Global";
 import { MagmaCanvas } from "../MagmaCanvas";
-export declare class Grid extends Drawable {
+import { CanvasObject, CanvasReference, Point } from "../Global";
+export declare class Grid extends CanvasObject {
     private _gridSpaceIndex;
     private _gridSpace;
     width: number;
@@ -8,14 +8,25 @@ export declare class Grid extends Drawable {
     mCanvas: MagmaCanvas;
     shapeHandlers: number[];
     gridSpaces: number[];
-    graphObjects: Drawable[];
+    graphObjects: CanvasObject[];
     graphCanvas: HTMLCanvasElement;
     graphFns: Function[];
+    plottedPoints: Point[];
     constructor(width: number, height: number);
     gridSpace: number;
     draw(ctx: CanvasRenderingContext2D): void;
-    attach(mCanvas: MagmaCanvas): void;
+    zoomIn(): boolean;
+    zoomOut(): boolean;
+    attach(mCanvas: MagmaCanvas, invokeRender: Function): CanvasReference;
     make(): void;
     graph(fn: Function): void;
+    plot(point: Point): void;
+    plot_points(points: Point[]): void;
+    clearGraphs(): void;
+    translatePoint(point: Point): {
+        x: number;
+        y: number;
+    };
     drawGraphs(): void;
+    contains(point: Point): boolean;
 }

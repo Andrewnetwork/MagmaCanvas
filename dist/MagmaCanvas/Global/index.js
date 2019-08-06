@@ -4,4 +4,4 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./Enum"));
-__export(require("./Interfaces"));
+__export(require("./CanvasObject"));
